@@ -1,0 +1,904 @@
+<!-- templates/app/find_route.html -->
+{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Поиск Маршрута</title>
+    {% load static %}
+    <!-- Подключение Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Подключение собственного файла стилей -->
+    <link rel="stylesheet" href="{% static 'pathfinder/style.css' %}">
+    <!-- Подключение jQuery и jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #e9f1f7, #fefefe);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            color: #fff;
+            padding: 60px 0;
+            border-radius: .5rem;
+            margin-bottom: 40px;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-top: 10px;
+        }
+
+        .card {
+            border-radius: .5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .floor-map {
+            transition: transform 0.2s ease;
+        }
+
+        .floor-map:hover {
+            transform: scale(1.005);
+        }
+
+        #clear-route {
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #clear-route:hover {
+            background-color: #e2e6ea;
+        }
+
+        #error-message {
+            font-weight: 600;
+        }
+
+        input.form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+        }
+
+        #single-microphone-btn {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        #single-microphone-btn:hover {
+            background-color: #e2e6ea;
+            transform: scale(1.05);
+        }
+
+        #floor-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #floor-buttons button {
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            opacity: 0.9;
+        }
+
+        #floor-buttons button:hover {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        .active-floor-highlight {
+            background-color: #0d6efd !important;
+            color: #fff !important;
+        }
+
+        /* Медиа-запросы для телефонов */
+        @media (max-width: 767.98px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            .hero-section {
+                padding: 40px 0;
+                margin-bottom: 20px;
+                display: none;
+            }
+            .col-lg-4, .col-lg-8 {
+                width: 100% !important;
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            .row {
+                flex-direction: column;
+            }
+            .svg-container {
+                height: 400px !important;
+            }
+            #floor-buttons {
+                top: 10px;
+                right: 10px;
+            }
+            #floor-buttons button {
+                font-size: 1rem;
+                padding: 10px;
+            }
+            body {
+                padding: 10px;
+            }
+            nav.navbar {
+                border-radius: .5rem;
+            }
+            #route-form button[type="submit"] {
+                font-size: 1rem;
+                padding: 10px;
+            }
+            #single-microphone-btn {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навбар -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4 animate__animated animate__fadeInDown">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">Campus Navigator</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section с анимацией появления -->
+        <div class="hero-section text-center shadow-sm animate__animated animate__zoomIn">
+            <h1 class="hero-title">Поиск Маршрута</h1>
+            <p class="hero-subtitle">Найдите путь от аудитории до аудитории с легкостью</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 animate__animated animate__fadeInLeft">
+                <!-- Форма поиска маршрута -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        Укажите точки маршрута
+                    </div>
+                    <div class="card-body">
+                        <form id="route-form">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_start" class="form-label">Начальная точка</label>
+                                <input type="search" id="id_start" name="start" class="form-control" placeholder="Напр.: 101 ауд." autocomplete="off">
+                                <input type="hidden" id="start_node_id" name="start_node_id" autocomplete="off">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_end" class="form-label">Конечная точка</label>
+                                <input type="search" id="id_end" name="end" class="form-control" placeholder="Напр.: 205 ауд." autocomplete="off">
+                                <input type="hidden" id="end_node_id" name="end_node_id" autocomplete="off">
+                            </div>
+
+                            <!-- Кнопка голосового ввода -->
+                            <div class="text-center mb-3">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="single-microphone-btn" title="Голосовой ввод">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-mic" viewBox="0 0 16 16">
+                                        <path d="M8 1a2 2 0 0 1 2 2v4a2 2 0 1 1-4 0V3a2 2 0 0 1 2-2z"/>
+                                        <path d="M5 10a3 3 0 0 0 6 0h1a4 4 0 0 1-8 0h1z"/>
+                                        <path d="M10 8a2 2 0 1 1-4 0v1c0 1.105.895 2 2 2s2-.895 2-2V8z"/>
+                                    </svg>
+                                    Голосовой ввод
+                                </button>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 fw-semibold">Найти маршрут</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="error-message" class="text-danger mb-3"></div>
+                <button id="clear-route" class="btn btn-outline-secondary w-100" style="display: none;">Очистить маршрут</button>
+            </div>
+
+            <div class="col-lg-8">
+                <!-- Карты этажей с анимациями -->
+                {% for floor in floors %}
+                    <div class="card mb-4 shadow-sm floor-map {% if forloop.first %}active-floor{% endif %} animate__animated animate__fadeInUp" id="floor-{{ floor.number }}" style="animation-delay: {{ forloop.counter|add:"0.1"|floatformat:"1" }}s;">
+                        <div class="card-header">
+                            Этаж {{ floor.number }}
+                        </div>
+                        <div class="card-body" style="overflow: hidden; position: relative;">
+                            {% if floor_svgs|get_item:floor.number %}
+                                <div class="svg-container" style="position: relative; width: 100%; height: 600px; background: #e9ecef; border: 1px solid #ced4da; border-radius: .25rem;">
+                                    <!-- Кнопки этажей на карте -->
+                                    <div id="floor-buttons">
+                                        {% for floor_btn in floors %}
+                                            <button class="btn btn-light {% if forloop.first %}active-floor-highlight{% endif %}" data-floor="{{ floor_btn.number }}">
+                                                Этаж {{ floor_btn.number }}
+                                            </button>
+                                        {% endfor %}
+                                    </div>
+
+                                    <!-- Основная карта -->
+                                    <svg class="floor-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4500 2500" style="transition: transform 0.3s ease;">
+                                        {{ floor_svgs|get_item:floor.number|safe }}
+                                    </svg>
+                                    <!-- SVG для маршрута -->
+                                    <svg class="route-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4500 2500" style="position: absolute; top: 0; left: 0; transition: transform 0.3s ease;"></svg>
+                                </div>
+                            {% else %}
+                                <p>SVG-файл не найден для этажа {{ floor.number }}.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+
+
+
+
+
+   <script>
+    $(document).ready(function() {
+        const routeForm = $('#route-form'); 
+        const errorMessage = $('#error-message');
+        const floorMaps = $('.floor-map');
+        const clearRouteButton = $('#clear-route');
+        let currentRoute = [];
+ $(document).on('click', '#floor-buttons button', function() {
+            const floorNumber = parseInt($(this).data('floor'), 10);
+            displayFloor(floorNumber);
+            $('#floor-buttons button').removeClass('active-floor-highlight');
+            $(this).addClass('active-floor-highlight');
+        });
+        // Кнопки этажей (jQuery-объект)
+        const floorButtons = $('#floor-buttons button');
+
+        // Обработчик для кнопок этажей
+        floorButtons.each(function() {
+            $(this).on('click', function() {
+                const floorNumber = parseInt($(this).data('floor'), 10);
+                displayFloor(floorNumber);
+
+
+            });
+        });
+
+        // Инициализация Autocomplete для start
+        $('#id_start').autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "{% url 'endpoint_autocomplete' %}",
+                    dataType: "json",
+                    data: {
+                        q: request.term
+                    },
+                    success: function(data) {
+                        // Сортируем data по label
+                        data.sort(function(a, b) {
+                            if (a.label < b.label) return -1;
+                            if (a.label > b.label) return 1;
+                            return 0;
+                        });
+                        response(data);
+                    }
+                });
+            },
+            minLength: 0,
+            select: function(event, ui) {
+                $('#start_node_id').val(ui.item.node_id);
+            }
+        }).focus(function() {
+            $(this).autocomplete('search', '');
+        });
+
+        // Инициализация Autocomplete для end
+        $('#id_end').autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "{% url 'endpoint_autocomplete' %}",
+                    dataType: "json",
+                    data: {
+                        q: request.term
+                    },
+                    success: function(data) {
+                        // Сортируем data по label
+                        data.sort(function(a, b) {
+                            if (a.label < b.label) return -1;
+                            if (a.label > b.label) return 1;
+                            return 0;
+                        });
+                        response(data);
+                    }
+                });
+            },
+            minLength: 0,
+            select: function(event, ui) {
+                $('#end_node_id').val(ui.item.node_id);
+            }
+        }).focus(function() {
+            $(this).autocomplete('search', '');
+        });
+
+
+        // Отправка формы
+        routeForm.on('submit', function(event) {
+            event.preventDefault();
+            errorMessage.text('');
+
+            const startNodeId = $('#start_node_id').val();
+            const endNodeId = $('#end_node_id').val();
+
+            if (!startNodeId || !endNodeId) {
+                errorMessage.text('Пожалуйста, выберите начальную и конечную точки из списка.');
+                return;
+            }
+
+            const formData = {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'start': startNodeId,
+                'end': endNodeId
+            };
+
+            $.ajax({
+                url: "{% url 'find_route' %}",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        currentRoute = data.route;
+                        displayRoute();
+                        clearRouteButton.show();
+                        highlightFloorsInRoute();
+
+                        // Получаем начальный узел
+                        const startNode = currentRoute[0];
+
+                        // Переключаемся на этаж начальной точки
+                        displayFloor(startNode.floor);
+
+                        // Центрируем карту на начальной точке
+                        const floorDiv = $('#floor-' + startNode.floor);
+                        if (floorDiv.length > 0) {
+                            const svgContainer = floorDiv.find('.svg-container');
+                            const floorSvg = svgContainer.find('svg.floor-svg');
+                            const routeSvg = svgContainer.find('svg.route-svg');
+                            
+                            let data = svgContainer.data(); // получить текущие значения
+                            
+                            let scale = 0.35;
+                            const containerWidth = svgContainer[0].offsetWidth;
+                            const containerHeight = svgContainer[0].offsetHeight;
+                            
+                            let translateX = containerWidth / 2 - startNode.x * scale;
+                            let translateY = containerHeight / 2 - startNode.y * scale;
+                            
+                            const scaledWidth = 4500 * scale;
+                            const scaledHeight = 2500 * scale;
+                            const minX = Math.min(0, containerWidth - scaledWidth);
+                            const maxX = 0;
+                            const minY = Math.min(0, containerHeight - scaledHeight);
+                            const maxY = 0;
+                            
+                            translateX = Math.max(minX, Math.min(maxX, translateX));
+                            translateY = Math.max(minY, Math.min(maxY, translateY));
+                            
+                            // Обновить data в svgContainer
+                            data.scale = scale;
+                            data.translateX = translateX;
+                            data.translateY = translateY;
+                            svgContainer.data(data);
+                            
+                            // Применить transform
+                            floorSvg.css('transform', `translate(${translateX}px, ${translateY}px) scale(${scale})`);
+                            routeSvg.css('transform', `translate(${translateX}px, ${translateY}px) scale(${scale})`);
+                        }
+
+                    } else {
+                        errorMessage.text(data.message);
+                        clearRouteButton.hide();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка:', error);
+                    errorMessage.text('Произошла ошибка при поиске маршрута.');
+                    clearRouteButton.hide();
+                }
+            });
+        });
+        
+         let recognition;
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = 'ru-RU'; 
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+        } else {
+            console.warn("Ваш браузер не поддерживает Web Speech API");
+        }
+
+        $('#single-microphone-btn').on('click', function() {
+            if (!recognition) {
+                alert("Ваш браузер не поддерживает голосовой ввод.");
+                return;
+            }
+            
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript.toLowerCase().trim();
+                console.log("Распознанный текст: ", transcript);
+
+                errorMessage.text('');
+                
+                let startText = "";
+                let endText = "";
+
+                // Пробуем несколько вариантов шаблонов
+                // 1. "начальная точка XXX конечная точка YYY"
+                let match1 = transcript.match(/начальная точка\s+(.+?)\s+конечная точка\s+(.+)/);
+                // 2. "от XXX до YYY"
+                let match2 = transcript.match(/от\s+(.+?)\s+до\s+(.+)/);
+
+                if (match1) {
+                    startText = match1[1].trim();
+                    endText = match1[2].trim();
+                } else if (match2) {
+                    startText = match2[1].trim();
+                    endText = match2[2].trim();
+                } else {
+                    // Если шаблонов не нашли, попробуем простой случай: "101 ... 102"
+                    let parts = transcript.split(/\s+(до|конечная точка|finish|end)\s+/);
+                    // Это упрощенная логика, вы можете расширять шаблоны по необходимости
+                }
+
+                if (!startText && !endText) {
+                    // Попытаемся выдернуть просто две последовательных части как числа или слова
+                    // Например "от 101 до 202"
+                    let match3 = transcript.match(/от\s+(\S+)\s+до\s+(\S+)/);
+                    if (match3) {
+                        startText = match3[1];
+                        endText = match3[2];
+                    }
+                }
+
+                if (!startText || !endText) {
+                    errorMessage.text('Не удалось распознать команды. Попробуйте сказать: "от 101 до 102"');
+                    return;
+                }
+
+                // Функция поиска первой подходящей точки через endpoint-autocomplete
+                function findEndpoint(query, callback) {
+                    $.ajax({
+                        url: "{% url 'endpoint_autocomplete' %}",
+                        dataType: "json",
+                        data: { q: query },
+                        success: function(data) {
+                            if (data && data.length > 0) {
+                                callback(data[0]); // берем первый результат
+                            } else {
+                                callback(null);
+                            }
+                        },
+                        error: function() {
+                            callback(null);
+                        }
+                    });
+                }
+
+                // Найдем стартовую точку
+                findEndpoint(startText, function(startResult) {
+                    if (!startResult) {
+                        errorMessage.text('Начальная точка не найдена по запросу: ' + startText);
+                        return;
+                    }
+                    $('#id_start').val(startResult.value);
+                    $('#start_node_id').val(startResult.node_id);
+
+                    // Найдем конечную точку
+                    findEndpoint(endText, function(endResult) {
+                        if (!endResult) {
+                            errorMessage.text('Конечная точка не найдена по запросу: ' + endText);
+                            return;
+                        }
+                        $('#id_end').val(endResult.value);
+                        $('#end_node_id').val(endResult.node_id);
+
+                        // Когда обе точки найдены, автоматически отправляем форму
+                        routeForm.submit();
+                    });
+                });
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+            };
+
+            recognition.onend = function() {
+                console.log('Распознавание завершено');
+            };
+ });
+        // Функция для отображения маршрута
+        function displayRoute() {
+            floorMaps.each(function() {
+                const floorDiv = $(this);
+                const floorNumber = parseInt(floorDiv.attr('id').split('-')[1], 10);
+                const svg = floorDiv.find('.route-svg');
+                svg.empty();
+
+                for (let i = 0; i < currentRoute.length - 1; i++) {
+                    const from = currentRoute[i];
+                    const to = currentRoute[i + 1];
+
+                    console.log(`Проверка соединения между узлами ${from.id} (Этаж ${from.floor}) и ${to.id} (Этаж ${to.floor})`);
+
+                    if (from.floor === floorNumber && to.floor === floorNumber) {
+                        console.log(`Добавляем линию от (${from.x}, ${from.y}) до (${to.x}, ${to.y}) на этаже ${floorNumber}`);
+                        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                        line.setAttribute("x1", from.x);
+                        line.setAttribute("y1", from.y);
+                        line.setAttribute("x2", to.x);
+                        line.setAttribute("y2", to.y);
+                        line.setAttribute("stroke", "darkblue");
+                        line.setAttribute("stroke-width", "10");
+                        svg[0].appendChild(line);
+                    }
+                }
+
+                addMarkers(floorNumber);
+            });
+        }
+
+        // Функция для добавления маркеров
+        function addMarkers(floorNumber) {
+            floorMaps.each(function() {
+                const floorDiv = $(this);
+                const currentFloorNumber = parseInt(floorDiv.attr('id').split('-')[1], 10);
+                if (currentFloorNumber === floorNumber) {
+                    const svg = floorDiv.find('.route-svg');
+                    const startNode = currentRoute[0];
+                    const endNode = currentRoute[currentRoute.length - 1];
+
+                    const markersToAdd = [];
+                    if (startNode.floor === floorNumber) {
+                        markersToAdd.push({ node: startNode, color: "darkblue", label: "Начало", radius: 15 });
+                    }
+                    if (endNode.floor === floorNumber && endNode.id !== startNode.id) {
+                        markersToAdd.push({ node: endNode, color: "darkblue", label: "Конец", radius: 15 });
+                    }
+
+                    // Добавляем маркеры для промежуточных узлов
+                    currentRoute.forEach((node, index) => {
+                        if (node.floor === floorNumber && node.id !== startNode.id && node.id !== endNode.id) {
+                            markersToAdd.push({ node: node, color: "darkblue", label: "", radius: 5 });
+                        }
+                    });
+
+                    markersToAdd.forEach(({ node, color, label, radius }) => {
+                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        circle.setAttribute("cx", node.x);
+                        circle.setAttribute("cy", node.y);
+                        circle.setAttribute("r", radius);
+                        circle.setAttribute("fill", color);
+                        circle.classList.add('route-marker');
+                        svg[0].appendChild(circle);
+
+                        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        text.setAttribute("x", node.x + 20);
+                        text.setAttribute("y", node.y - 20);
+                        text.setAttribute("fill", "black");
+                        text.setAttribute("font-size", "45px");
+                        text.textContent = label;
+                        text.setAttribute("visibility", "visible");
+                        svg[0].appendChild(text);
+
+                        // События мыши тоже через jQuery можно, но для SVG можно оставить addEventListener
+                        // Если хотите строго jQuery, придется использовать .on() с преобразованием в jQuery-объект
+                        $(circle).on('mouseover', function() {
+                            $(text).attr('visibility', 'visible');
+                        });
+                        $(circle).on('mouseout', function() {
+                            $(text).attr('visibility', 'visible');
+                        });
+                    });
+                }
+            });
+        }
+
+        // Функция для выделения этажей
+        function highlightFloorsInRoute() {
+            const floorsInRoute = [...new Set(currentRoute.map(node => node.floor))].sort((a, b) => a - b);
+            floorButtons.each(function() {
+                const floorNumber = parseInt($(this).data('floor'), 10);
+                if (floorsInRoute.includes(floorNumber)) {
+                    $(this).addClass('active-floor-highlight');
+                } else {
+                    $(this).removeClass('active-floor-highlight');
+                }
+            });
+        }
+
+        // Функция для отображения выбранного этажа
+         function displayFloor(floorNumber) {
+            floorMaps.removeClass('active-floor');
+            const floorDiv = $(`#floor-${floorNumber}`);
+            if (floorDiv.length > 0) {
+                floorDiv.addClass('active-floor');
+            }
+            // Обновить активный класс кнопки
+            floorButtons.each(function() {
+                const btnFloor = parseInt($(this).data('floor'), 10);
+                if (btnFloor === floorNumber) {
+                    $(this).addClass('active');
+                } else {
+                    $(this).removeClass('active');
+                }
+            });
+        }
+
+        // Функция для очистки маршрута
+        clearRouteButton.on('click', function() {
+            currentRoute = [];
+            errorMessage.text('');
+            clearRouteButton.hide();
+            $('.route-svg').empty();
+
+            // Сбросить выделения этажей
+            floorButtons.removeClass('active-floor-highlight');
+
+            // Сбросить активные кнопки
+            floorButtons.removeClass('active');
+
+            // Показать первый этаж
+            if (floorButtons.length > 0) {
+                const firstButton = floorButtons.first();
+                firstButton.addClass('active');
+                const firstFloor = parseInt(firstButton.data('floor'), 10);
+                displayFloor(firstFloor);
+            }
+
+            // Сбросить форму
+            $('#route-form')[0].reset();
+            
+            // Очистить поля ввода и скрытые поля node_id
+            $('#id_start, #id_end').val(''); 
+            $('#start_node_id, #end_node_id').val('');
+            console.log("Форма сброшена");
+            console.log("id_start:", $('#id_start').val());
+            console.log("id_end:", $('#id_end').val());
+        });
+        
+
+
+
+
+
+        // Логика масштабирования и перетаскивания карты
+        floorMaps.each(function() {
+            const floorDiv = $(this);
+            const svgContainer = floorDiv.find('.svg-container');
+            const floorSvg = svgContainer.find('svg.floor-svg');
+            const routeSvg = svgContainer.find('svg.route-svg');
+        
+            // Инициализируем начальные значения и сохраняем их в data
+            let data = {
+                scale: 0.25,
+                translateX: 0,
+                translateY: 0,
+                isDragging: false,
+                initialDistance: null,
+                initialCenter: null,
+                activeTouches: {}
+            };
+            svgContainer.data(data);
+        
+            // Применяем начальный transform
+            updateTransform();
+        
+            // Обработчик события масштабирования (wheel)
+            svgContainer.on('wheel', function(e) {
+                e.preventDefault();
+                let d = svgContainer.data();
+                const scaleAmount = 0.1;
+                const oldScale = d.scale;
+        
+                if (e.originalEvent.deltaY < 0) {
+                    if (d.scale <= 1.7){
+                        d.scale += scaleAmount; 
+                    }
+                } else {
+                    d.scale = Math.max(0.25, d.scale - scaleAmount);
+                }
+        
+                let rect = this.getBoundingClientRect();
+                const mouseX = e.originalEvent.clientX - rect.left;
+                const mouseY = e.originalEvent.clientY - rect.top;
+        
+                const offsetX = (mouseX - d.translateX) / oldScale;
+                const offsetY = (mouseY - d.translateY) / oldScale;
+        
+                d.translateX = mouseX - offsetX * d.scale;
+                d.translateY = mouseY - offsetY * d.scale;
+        
+                svgContainer.data(d);
+                clampPosition();
+                updateTransform();
+            });
+        
+            // Перетаскивание карты (мышь)
+            svgContainer.on('mousedown', function(e) {
+                e.preventDefault();
+                let d = svgContainer.data();
+                d.isDragging = true;
+                d.startX = e.clientX - d.translateX;
+                d.startY = e.clientY - d.translateY;
+                svgContainer.data(d);
+            });
+        
+            svgContainer.on('mousemove', function(e) {
+                let d = svgContainer.data();
+                if (!d.isDragging) return;
+                d.translateX = e.clientX - d.startX;
+                d.translateY = e.clientY - d.startY;
+                svgContainer.data(d);
+                clampPosition();
+                updateTransform();
+            });
+        
+            svgContainer.on('mouseup mouseleave', function() {
+                let d = svgContainer.data();
+                d.isDragging = false;
+                svgContainer.data(d);
+            });
+        
+            // Touch Events
+            svgContainer.on('touchstart', function(e) {
+                let d = svgContainer.data();
+                let originalEvent = e.originalEvent;
+                for (let touch of originalEvent.changedTouches) {
+                    d.activeTouches[touch.identifier] = touch;
+                }
+        
+                if (originalEvent.touches.length === 2) {
+                    const dx = originalEvent.touches[0].clientX - originalEvent.touches[1].clientX;
+                    const dy = originalEvent.touches[0].clientY - originalEvent.touches[1].clientY;
+                    d.initialDistance = Math.sqrt(dx * dx + dy * dy);
+                    d.initialCenter = getTouchCenter(originalEvent.touches);
+                } else if (originalEvent.touches.length === 1) {
+                    d.isDragging = true;
+                    const touch = originalEvent.touches[0];
+                    d.startTouchX = touch.clientX - d.translateX;
+                    d.startTouchY = touch.clientY - d.translateY;
+                }
+                svgContainer.data(d);
+            });
+        
+            svgContainer.on('touchmove', function(e) {
+                let d = svgContainer.data();
+                let originalEvent = e.originalEvent;
+                if (originalEvent.touches.length === 2 && d.initialDistance) {
+                    e.preventDefault();
+                    const dx = originalEvent.touches[0].clientX - originalEvent.touches[1].clientX;
+                    const dy = originalEvent.touches[0].clientY - originalEvent.touches[1].clientY;
+                    const currentDistance = Math.sqrt(dx * dx + dy * dy);
+        
+                    const scaleChange = currentDistance / d.initialDistance;
+                    const newScale = Math.max(0.17, Math.min(d.scale * scaleChange, 2.5)); // Ограничиваем масштаб между 0.17 и 2.0
+        
+                    const currentCenter = getTouchCenter(originalEvent.touches);
+                    const offsetX = (currentCenter.x - d.translateX) / d.scale;
+                    const offsetY = (currentCenter.y - d.translateY) / d.scale;
+        
+                    d.translateX = currentCenter.x - offsetX * newScale;
+                    d.translateY = currentCenter.y - offsetY * newScale;
+        
+                    d.scale = newScale;
+                    d.initialDistance = currentDistance;
+        
+                    svgContainer.data(d);
+                    clampPosition();
+                    updateTransform();
+                } else if (originalEvent.touches.length === 1 && d.isDragging) {
+                    const touch = originalEvent.touches[0];
+                    d.translateX = touch.clientX - d.startTouchX;
+                    d.translateY = touch.clientY - d.startTouchY;
+                    svgContainer.data(d);
+                    clampPosition();
+                    updateTransform();
+                }
+            });
+        
+            svgContainer.on('touchend touchcancel', function(e) {
+                let d = svgContainer.data();
+                let originalEvent = e.originalEvent;
+                for (let touch of originalEvent.changedTouches) {
+                    delete d.activeTouches[touch.identifier];
+                }
+        
+                if (originalEvent.touches.length === 2) {
+                    const dx = originalEvent.touches[0].clientX - originalEvent.touches[1].clientX;
+                    const dy = originalEvent.touches[0].clientY - originalEvent.touches[1].clientY;
+                    d.initialDistance = Math.sqrt(dx * dx + dy * dy);
+                    d.initialCenter = getTouchCenter(originalEvent.touches);
+                } else if (originalEvent.touches.length === 1) {
+                    d.isDragging = true;
+                    const touch = originalEvent.touches[0];
+                    d.startTouchX = touch.clientX - d.translateX;
+                    d.startTouchY = touch.clientY - d.translateY;
+                    d.initialDistance = null;
+                    d.initialCenter = null;
+                } else {
+                    d.isDragging = false;
+                    d.initialDistance = null;
+                    d.initialCenter = null;
+                }
+                svgContainer.data(d);
+            });
+        
+            function getTouchCenter(touches) {
+                const rect = svgContainer[0].getBoundingClientRect();
+                const x = (touches[0].clientX + touches[1].clientX) / 2 - rect.left;
+                const y = (touches[0].clientY + touches[1].clientY) / 2 - rect.top;
+                return { x, y };
+            }
+        
+            function updateTransform() {
+                let d = svgContainer.data();
+                floorSvg.css('transform', `translate(${d.translateX}px, ${d.translateY}px) scale(${d.scale})`);
+                routeSvg.css('transform', `translate(${d.translateX}px, ${d.translateY}px) scale(${d.scale})`);
+            }
+        
+            function clampPosition() {
+                let d = svgContainer.data();
+                const containerWidth = svgContainer[0].offsetWidth;
+                const containerHeight = svgContainer[0].offsetHeight;
+                const scaledWidth = 4500 * d.scale;
+                const scaledHeight = 2500 * d.scale;
+        
+                const minX = Math.min(0, containerWidth - scaledWidth);
+                const maxX = 0;
+                const minY = Math.min(0, containerHeight - scaledHeight);
+                const maxY = 0;
+        
+                d.translateX = Math.max(minX, Math.min(maxX, d.translateX));
+                d.translateY = Math.max(minY, Math.min(maxY, d.translateY));
+        
+                svgContainer.data(d);
+            }
+        });
+
+
+        
+
+    });
+</script>
+
+</body>
+</html>

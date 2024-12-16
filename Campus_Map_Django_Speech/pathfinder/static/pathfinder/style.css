@@ -1,0 +1,119 @@
+/* Основные стили для этажей */
+        .floor-map {
+            display: none;
+            position: relative;
+            margin-bottom: 20px; /* Отступы между этажами */
+            user-select: none; /* Отключает выделение текста */
+        }
+        .active-floor {
+            display: block;
+            user-select: none; /* Отключает выделение текста */
+        }
+        .active-floor-highlight {
+            border: 2px solid #4CAF50; /* Выделение зелёной рамкой для этажей с маршрутом */
+            user-select: none; /* Отключает выделение текста */
+        }
+
+        /* Настройка контейнера SVG */
+        .svg-container {
+            position: relative;
+            width: 100%;
+            max-width: 1120px;
+            height: 600px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            margin: 0 auto;    /* Центрируем карту */
+            overflow: hidden; /* Обрезать карту при движении */
+            user-select: none; /* Отключение выделения текста */
+            touch-action: none; /* Разрешаем прокрутку, но обработаем жесты вручную */
+            overflow: hidden;  /* Отключаем стандартную прокрутку */
+            background: #DBDCE6;
+            user-select: none; /* Отключает выделение текста */
+        }
+
+
+
+
+        /* Масштабирование SVG */
+        .svg-container svg.floor-svg {
+            width: 4500px;
+            height: 2500px;
+            position: relative; /* Относительное позиционирование */
+            z-index: 1; /* Нижний слой */
+            transform-origin: 0 0; /* Устанавливаем точку масштабирования */
+            transition: transform 0.1s ease-out; /* Плавное масштабирование */
+            will-change: transform;
+            border: none;
+            image-rendering: optimizeQuality; /* Для улучшения качества */
+
+        }
+
+        .svg-container svg.route-svg {
+            width: 4500px;
+            height: 2500px;
+            position: absolute; /* Абсолютное позиционирование для наложения */
+            top: 0;
+            left: 0;
+            transform-origin: 0 0; /* Устанавливаем точку масштабирования */
+            transition: transform 0.1s ease-out; /* Плавное масштабирование */
+            pointer-events: none; /* Не мешает взаимодействию с картой */
+            z-index: 10; /* Верхний слой */
+            will-change: transform;
+            image-rendering: optimizeQuality; /* Для улучшения качества */
+
+        }
+
+        .route-svg line {
+            stroke: darkblue;
+            stroke-width: 10; /* Толщина линии соответствует масштабу */
+        }
+
+        /* Скрыть все узлы внутри этажного SVG */
+        .floor-svg .node {
+            display: none;
+        }
+
+        /* Показывать только маркеры маршрута */
+        .route-svg .route-marker {
+            display: block;
+        }
+
+        /* Стили для навигации по этажам */
+        .floor-navigation {
+            margin-top: 20px;
+        }
+        .floor-navigation button {
+            margin-right: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .floor-navigation button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Дополнительные стили для выделения этажей с маршрутом */
+        .active-floor-highlight {
+            border: 2px solid #4CAF50; /* Выделение зелёной рамкой */
+        }
+
+
+
+        /* Стили для кнопки "Очистить маршрут" */
+        #clear-route {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        #clear-route:hover {
+            background-color: #d32f2f;
+        }
+        #floor-buttons {
+            margin-bottom: 10px;
+
+        }
