@@ -5,74 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5344e3c4-608f-43eb-8681-b29791cb19c0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Campus_Map_Django_Speech.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/asgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/management/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/management/commands/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/management/commands/import_graph.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/migrations/0001_initial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/migrations/0002_remove_floor_image_floor_svg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/scripts.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/static/pathfinder/script.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/static/pathfinder/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/templates/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/templates/pathfinder/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/templates/pathfinder/find_route.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/templatetags/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/templatetags/custom_tags.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/utils/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/utils/route_finder.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/pathfinder/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/wsgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/edges.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/floor_svgs/float_2.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/floor_svgs/floor_1.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/floor_svgs/floor_1_GythGvH.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/floor_svgs/floor_2.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/floor_svgs/floor_2_xfOjUpP.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nodes.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/management/commands/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/management/commands/import_graph.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/migrations/0001_initial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/migrations/0002_remove_floor_image_floor_svg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/migrations/0003_endpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/scripts.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/static/pathfinder/script.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/static/pathfinder/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/templates/pathfinder/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/templates/pathfinder/find_route.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/templatetags/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/templatetags/custom_tags.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/utils/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/utils/route_finder.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinder/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pathfinder/templates/pathfinder/find_route.html" beforeDir="false" afterPath="$PROJECT_DIR$/pathfinder/templates/pathfinder/find_route.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,31 +25,31 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2qI1qsuE5YOjkJg8ezWrS8sF67L" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Django Server.Campus_Map_Django_Speech.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "com.codeium.enabled": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/10509/PycharmProjects/Campus_Map_Django_Speech",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Django Server.Campus_Map_Django_Speech.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/10509/PycharmProjects/Campus_Map_Django_Speech&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\10509\PycharmProjects\Campus_Map_Django_Speech" />
@@ -158,8 +91,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23339.19" />
-        <option value="bundled-python-sdk-0029f7779945-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23339.19" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.17011.127" />
+        <option value="bundled-python-sdk-48aec45f0201-7e9c3bbb6e34-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.17011.127" />
       </set>
     </attachedChunks>
   </component>
@@ -172,6 +105,7 @@
       <option name="presentableId" value="Default" />
       <updated>1734335468500</updated>
       <workItem from="1734335469919" duration="1418000" />
+      <workItem from="1734337844431" duration="56000" />
     </task>
     <servers />
   </component>
