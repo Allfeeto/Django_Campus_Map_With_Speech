@@ -456,67 +456,25 @@
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
         function normalizeWord(word) {
-            // Убираем окончания типа "ого", "ому", "ая", "ой" и т.п.
-            const patterns = [
-                /ова$/, /евой$/, /ого$/, /ему$/, /ий$/, /ая$/, /ой$/, /ого$/, /ый$/, /ую$/, /ей$/, /ам$/, /ом$/, /ах$/, /ы$/, /ов$/, /a$/, /и$/
-            ];
-            for (const pattern of patterns) {
-                if (pattern.test(word)) {
-                    return word.replace(pattern, ''); // Обрезаем окончание
-                }
-            }
-            return word; // Возвращаем слово без изменений
-        }
+    // Убираем числовые окончания (-й, -я, -ая)
+    word = word.replace(/(\d+)-?(й|я|ая|ая)$/i, '$1'); // 101-й -> 101
+    word = word.replace(/ова$/, 'ов'); // Иванова -> Иванов
+    word = word.replace(/овой$/, 'ов'); // Ивановой -> Иванов
+    word = word.replace(/ой$/, '');   // Точки -> Точка
+    word = word.replace(/ая$/, '');   // Точка -> Точка
+    word = word.replace(/ого$/, '');  // Главного -> Главный
+    word = word.replace(/ому$/, '');  // Главному -> Главный
 
-
-
-              function normalizeText(input) {
-    const units = {
-        'ноль': 0, 'один': 1, 'одна': 1, 'два': 2, 'две': 2, 'три': 3, 'четыре': 4,
-        'пять': 5, 'шесть': 6, 'семь': 7, 'восемь': 8, 'девять': 9, 'десять': 10,
-        'одиннадцать': 11, 'двенадцать': 12, 'тринадцать': 13, 'четырнадцать': 14,
-        'пятнадцать': 15, 'шестнадцать': 16, 'семнадцать': 17, 'восемнадцать': 18,
-        'девятнадцать': 19
-    };
-    const tens = {
-        'двадцать': 20, 'тридцать': 30, 'сорок': 40, 'пятьдесят': 50,
-        'шестьдесят': 60, 'семьдесят': 70, 'восемьдесят': 80, 'девяносто': 90
-    };
-    const hundreds = {
-        'сто': 100, 'двести': 200, 'триста': 300, 'четыреста': 400,
-        'пятьсот': 500, 'шестьсот': 600, 'семьсот': 700, 'восемьсот': 800, 'девятьсот': 900
-    };
-
-    const fixedPoints = {
-        "главный вход": "главный вход",
-        "точка кипения": "точка кипения",
-        "точка кипения": "точки кипения",
-        "иванов": "иванов",
-        "петров": "петров"
-    };
-
-    input = input.toLowerCase().replace(/(ая|ой|ый|ой|ой|ой|ая|ое)/g, ''); // Убираем окончания
-
-    // Проверка на фиксированные фразы
-    if (fixedPoints[input]) {
-        return fixedPoints[input];
-    }
-
-    // Разбиваем на слова и обрабатываем числа
-    const wordsArray = input.split(' ');
-    let number = 0;
-    wordsArray.forEach(word => {
-        if (units[word] !== undefined) number += units[word];
-        else if (tens[word] !== undefined) number += tens[word];
-        else if (hundreds[word] !== undefined) number += hundreds[word];
-    });
-
-    return number || input; // Если это не число, возвращаем исходное слово
+    // Возвращаем обработанное слово
+    return word;
 }
 
 
+
+
+
       recognition.onresult = function(event) {
-    const transcript = event.results[0][0].transcript.toLowerCase().trim();
+    let transcript = event.results[0][0].transcript.toLowerCase().trim();
     console.log("Распознанный текст: ", transcript);
 
     errorMessage.text('');
