@@ -452,90 +452,145 @@
             
             recognition.start();
 
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript.toLowerCase().trim();
-                console.log("Распознанный текст: ", transcript);
+            function capitalizeFirstLetter(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+        function normalizeWord(word) {
+            // Убираем окончания типа "ого", "ому", "ая", "ой" и т.п.
+            const patterns = [
+                /ова$/, /евой$/, /ого$/, /ему$/, /ий$/, /ая$/, /ой$/, /ого$/, /ый$/, /ую$/, /ей$/, /ам$/, /ом$/, /ах$/, /ы$/, /ов$/, /a$/, /и$/
+            ];
+            for (const pattern of patterns) {
+                if (pattern.test(word)) {
+                    return word.replace(pattern, ''); // Обрезаем окончание
+                }
+            }
+            return word; // Возвращаем слово без изменений
+        }
 
-                errorMessage.text('');
-                
-                let startText = "";
-                let endText = "";
 
-                // Пробуем несколько вариантов шаблонов
-                // 1. "начальная точка XXX конечная точка YYY"
-                let match1 = transcript.match(/начальная точка\s+(.+?)\s+конечная точка\s+(.+)/);
-                // 2. "от XXX до YYY"
-                let match2 = transcript.match(/от\s+(.+?)\s+до\s+(.+)/);
+              function normalizeText(input) {
+    const units = {
+        'ноль': 0, 'один': 1, 'одна': 1, 'два': 2, 'две': 2, 'три': 3, 'четыре': 4,
+        'пять': 5, 'шесть': 6, 'семь': 7, 'восемь': 8, 'девять': 9, 'десять': 10,
+        'одиннадцать': 11, 'двенадцать': 12, 'тринадцать': 13, 'четырнадцать': 14,
+        'пятнадцать': 15, 'шестнадцать': 16, 'семнадцать': 17, 'восемнадцать': 18,
+        'девятнадцать': 19
+    };
+    const tens = {
+        'двадцать': 20, 'тридцать': 30, 'сорок': 40, 'пятьдесят': 50,
+        'шестьдесят': 60, 'семьдесят': 70, 'восемьдесят': 80, 'девяносто': 90
+    };
+    const hundreds = {
+        'сто': 100, 'двести': 200, 'триста': 300, 'четыреста': 400,
+        'пятьсот': 500, 'шестьсот': 600, 'семьсот': 700, 'восемьсот': 800, 'девятьсот': 900
+    };
 
-                if (match1) {
-                    startText = match1[1].trim();
-                    endText = match1[2].trim();
-                } else if (match2) {
-                    startText = match2[1].trim();
-                    endText = match2[2].trim();
+    const fixedPoints = {
+        "главный вход": "главный вход",
+        "точка кипения": "точка кипения",
+        "точка кипения": "точки кипения",
+        "иванов": "иванов",
+        "петров": "петров"
+    };
+
+    input = input.toLowerCase().replace(/(ая|ой|ый|ой|ой|ой|ая|ое)/g, ''); // Убираем окончания
+
+    // Проверка на фиксированные фразы
+    if (fixedPoints[input]) {
+        return fixedPoints[input];
+    }
+
+    // Разбиваем на слова и обрабатываем числа
+    const wordsArray = input.split(' ');
+    let number = 0;
+    wordsArray.forEach(word => {
+        if (units[word] !== undefined) number += units[word];
+        else if (tens[word] !== undefined) number += tens[word];
+        else if (hundreds[word] !== undefined) number += hundreds[word];
+    });
+
+    return number || input; // Если это не число, возвращаем исходное слово
+}
+
+
+      recognition.onresult = function(event) {
+    const transcript = event.results[0][0].transcript.toLowerCase().trim();
+    console.log("Распознанный текст: ", transcript);
+
+    errorMessage.text('');
+
+    let startText = "";
+    let endText = "";
+
+    // Пробуем несколько вариантов шаблонов
+    let match1 = transcript.match(/начальная точка\s+(.+?)\s+конечная точка\s+(.+)/);
+    let match2 = transcript.match(/от\s+(.+?)\s+до\s+(.+)/);
+
+    if (match1) {
+        startText = normalizeWord(match1[1].trim());
+        endText = normalizeWord(match1[2].trim());
+    } else if (match2) {
+        startText = normalizeWord(match2[1].trim());
+        endText = normalizeWord(match2[2].trim());
+    }
+
+    if (!startText || !endText) {
+        errorMessage.text('Не удалось распознать команды. Попробуйте сказать: "от 101 до 102"');
+        return;
+    }
+
+    // Капитализируем тексты для поиска
+    startText = capitalizeFirstLetter(startText);
+    endText = capitalizeFirstLetter(endText);
+
+    console.log("Начальная точка:", startText);
+    console.log("Конечная точка:", endText);
+
+    // Функция поиска через endpoint-autocomplete
+    function findEndpoint(query, callback) {
+        $.ajax({
+            url: "{% url 'endpoint_autocomplete' %}",
+            dataType: "json",
+            data: { q: query },
+            success: function(data) {
+                if (data && data.length > 0) {
+                    callback(data[0]); // берем первый результат
                 } else {
-                    // Если шаблонов не нашли, попробуем простой случай: "101 ... 102"
-                    let parts = transcript.split(/\s+(до|конечная точка|finish|end)\s+/);
-                    // Это упрощенная логика, вы можете расширять шаблоны по необходимости
+                    callback(null);
                 }
+            },
+            error: function() {
+                callback(null);
+            }
+        });
+    }
 
-                if (!startText && !endText) {
-                    // Попытаемся выдернуть просто две последовательных части как числа или слова
-                    // Например "от 101 до 202"
-                    let match3 = transcript.match(/от\s+(\S+)\s+до\s+(\S+)/);
-                    if (match3) {
-                        startText = match3[1];
-                        endText = match3[2];
-                    }
-                }
+    // Найдем стартовую точку
+    findEndpoint(startText, function(startResult) {
+        if (!startResult) {
+            errorMessage.text('Начальная точка не найдена по запросу: ' + startText);
+            return;
+        }
+        $('#id_start').val(startResult.value);
+        $('#start_node_id').val(startResult.node_id);
 
-                if (!startText || !endText) {
-                    errorMessage.text('Не удалось распознать команды. Попробуйте сказать: "от 101 до 102"');
-                    return;
-                }
+        // Найдем конечную точку
+        findEndpoint(endText, function(endResult) {
+            if (!endResult) {
+                errorMessage.text('Конечная точка не найдена по запросу: ' + endText);
+                return;
+            }
+            $('#id_end').val(endResult.value);
+            $('#end_node_id').val(endResult.node_id);
 
-                // Функция поиска первой подходящей точки через endpoint-autocomplete
-                function findEndpoint(query, callback) {
-                    $.ajax({
-                        url: "{% url 'endpoint_autocomplete' %}",
-                        dataType: "json",
-                        data: { q: query },
-                        success: function(data) {
-                            if (data && data.length > 0) {
-                                callback(data[0]); // берем первый результат
-                            } else {
-                                callback(null);
-                            }
-                        },
-                        error: function() {
-                            callback(null);
-                        }
-                    });
-                }
+            // Когда обе точки найдены, автоматически отправляем форму
+            routeForm.submit();
+        });
+    });
+};
 
-                // Найдем стартовую точку
-                findEndpoint(startText, function(startResult) {
-                    if (!startResult) {
-                        errorMessage.text('Начальная точка не найдена по запросу: ' + startText);
-                        return;
-                    }
-                    $('#id_start').val(startResult.value);
-                    $('#start_node_id').val(startResult.node_id);
 
-                    // Найдем конечную точку
-                    findEndpoint(endText, function(endResult) {
-                        if (!endResult) {
-                            errorMessage.text('Конечная точка не найдена по запросу: ' + endText);
-                            return;
-                        }
-                        $('#id_end').val(endResult.value);
-                        $('#end_node_id').val(endResult.node_id);
-
-                        // Когда обе точки найдены, автоматически отправляем форму
-                        routeForm.submit();
-                    });
-                });
-            };
 
             recognition.onerror = function(event) {
                 console.error('Speech recognition error:', event.error);

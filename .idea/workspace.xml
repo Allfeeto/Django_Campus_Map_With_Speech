@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5344e3c4-608f-43eb-8681-b29791cb19c0" name="Changes" comment="2">
+    <list default="true" id="5344e3c4-608f-43eb-8681-b29791cb19c0" name="Changes" comment="test">
+      <change beforePath="$PROJECT_DIR$/.idea/Campus_Map_Django_Speech.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Campus_Map_Django_Speech.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pathfinder/templates/pathfinder/find_route.html" beforeDir="false" afterPath="$PROJECT_DIR$/pathfinder/templates/pathfinder/find_route.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,12 +49,13 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;com.codeium.enabled&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/10509/PycharmProjects/Campus_Map_Django_Speech&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/sanme/PycharmProjects/Django_Campus_Map_With_Speech&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -110,7 +114,9 @@
       <option name="presentableId" value="Default" />
       <updated>1734335468500</updated>
       <workItem from="1734335469919" duration="1418000" />
-      <workItem from="1734337844431" duration="125000" />
+      <workItem from="1734337844431" duration="480000" />
+      <workItem from="1734391309701" duration="50000" />
+      <workItem from="1734458780008" duration="3651000" />
     </task>
     <task id="LOCAL-00001" summary="2">
       <option name="closed" value="true" />
@@ -120,7 +126,15 @@
       <option name="project" value="LOCAL" />
       <updated>1734337915202</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="test">
+      <option name="closed" value="true" />
+      <created>1734337992363</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1734337992363</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -128,6 +142,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="2" />
-    <option name="LAST_COMMIT_MESSAGE" value="2" />
+    <MESSAGE value="test" />
+    <option name="LAST_COMMIT_MESSAGE" value="test" />
   </component>
 </project>
