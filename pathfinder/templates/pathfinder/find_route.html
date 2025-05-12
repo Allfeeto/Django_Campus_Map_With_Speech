@@ -195,7 +195,7 @@
                                 <input type="search" id="id_start" name="start" class="form-control" placeholder="Напр.: 101 ауд." autocomplete="off">
                                 <input type="hidden" id="start_node_id" name="start_node_id" autocomplete="off">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="id_end" class="form-label">Конечная точка</label>
                                 <input type="search" id="id_end" name="end" class="form-control" placeholder="Напр.: 205 ауд." autocomplete="off">
@@ -257,7 +257,7 @@
                 {% endfor %}
             </div>
         </div>
-        
+
     </div>
 
 
@@ -266,7 +266,7 @@
 
    <script>
     $(document).ready(function() {
-        const routeForm = $('#route-form'); 
+        const routeForm = $('#route-form');
         const errorMessage = $('#error-message');
         const floorMaps = $('.floor-map');
         const clearRouteButton = $('#clear-route');
@@ -390,32 +390,32 @@
                             const svgContainer = floorDiv.find('.svg-container');
                             const floorSvg = svgContainer.find('svg.floor-svg');
                             const routeSvg = svgContainer.find('svg.route-svg');
-                            
+
                             let data = svgContainer.data(); // получить текущие значения
-                            
+
                             let scale = 0.35;
                             const containerWidth = svgContainer[0].offsetWidth;
                             const containerHeight = svgContainer[0].offsetHeight;
-                            
+
                             let translateX = containerWidth / 2 - startNode.x * scale;
                             let translateY = containerHeight / 2 - startNode.y * scale;
-                            
+
                             const scaledWidth = 4500 * scale;
                             const scaledHeight = 2500 * scale;
                             const minX = Math.min(0, containerWidth - scaledWidth);
                             const maxX = 0;
                             const minY = Math.min(0, containerHeight - scaledHeight);
                             const maxY = 0;
-                            
+
                             translateX = Math.max(minX, Math.min(maxX, translateX));
                             translateY = Math.max(minY, Math.min(maxY, translateY));
-                            
+
                             // Обновить data в svgContainer
                             data.scale = scale;
                             data.translateX = translateX;
                             data.translateY = translateY;
                             svgContainer.data(data);
-                            
+
                             // Применить transform
                             floorSvg.css('transform', `translate(${translateX}px, ${translateY}px) scale(${scale})`);
                             routeSvg.css('transform', `translate(${translateX}px, ${translateY}px) scale(${scale})`);
@@ -433,11 +433,11 @@
                 }
             });
         });
-        
+
          let recognition;
         if ('webkitSpeechRecognition' in window) {
             recognition = new webkitSpeechRecognition();
-            recognition.lang = 'ru-RU'; 
+            recognition.lang = 'ru-RU';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
         } else {
@@ -449,7 +449,7 @@
                 alert("Ваш браузер не поддерживает голосовой ввод.");
                 return;
             }
-            
+
             recognition.start();
 
             function capitalizeFirstLetter(text) {
@@ -700,15 +700,15 @@
 
             // Сбросить форму
             $('#route-form')[0].reset();
-            
+
             // Очистить поля ввода и скрытые поля node_id
-            $('#id_start, #id_end').val(''); 
+            $('#id_start, #id_end').val('');
             $('#start_node_id, #end_node_id').val('');
             console.log("Форма сброшена");
             console.log("id_start:", $('#id_start').val());
             console.log("id_end:", $('#id_end').val());
         });
-        
+
 
 
 
@@ -720,7 +720,7 @@
             const svgContainer = floorDiv.find('.svg-container');
             const floorSvg = svgContainer.find('svg.floor-svg');
             const routeSvg = svgContainer.find('svg.route-svg');
-        
+
             // Инициализируем начальные значения и сохраняем их в data
             let data = {
                 scale: 0.25,
@@ -732,40 +732,40 @@
                 activeTouches: {}
             };
             svgContainer.data(data);
-        
+
             // Применяем начальный transform
             updateTransform();
-        
+
             // Обработчик события масштабирования (wheel)
             svgContainer.on('wheel', function(e) {
                 e.preventDefault();
                 let d = svgContainer.data();
                 const scaleAmount = 0.1;
                 const oldScale = d.scale;
-        
+
                 if (e.originalEvent.deltaY < 0) {
                     if (d.scale <= 1.7){
-                        d.scale += scaleAmount; 
+                        d.scale += scaleAmount;
                     }
                 } else {
                     d.scale = Math.max(0.25, d.scale - scaleAmount);
                 }
-        
+
                 let rect = this.getBoundingClientRect();
                 const mouseX = e.originalEvent.clientX - rect.left;
                 const mouseY = e.originalEvent.clientY - rect.top;
-        
+
                 const offsetX = (mouseX - d.translateX) / oldScale;
                 const offsetY = (mouseY - d.translateY) / oldScale;
-        
+
                 d.translateX = mouseX - offsetX * d.scale;
                 d.translateY = mouseY - offsetY * d.scale;
-        
+
                 svgContainer.data(d);
                 clampPosition();
                 updateTransform();
             });
-        
+
             // Перетаскивание карты (мышь)
             svgContainer.on('mousedown', function(e) {
                 e.preventDefault();
@@ -775,7 +775,7 @@
                 d.startY = e.clientY - d.translateY;
                 svgContainer.data(d);
             });
-        
+
             svgContainer.on('mousemove', function(e) {
                 let d = svgContainer.data();
                 if (!d.isDragging) return;
@@ -785,13 +785,13 @@
                 clampPosition();
                 updateTransform();
             });
-        
+
             svgContainer.on('mouseup mouseleave', function() {
                 let d = svgContainer.data();
                 d.isDragging = false;
                 svgContainer.data(d);
             });
-        
+
             // Touch Events
             svgContainer.on('touchstart', function(e) {
                 let d = svgContainer.data();
@@ -799,7 +799,7 @@
                 for (let touch of originalEvent.changedTouches) {
                     d.activeTouches[touch.identifier] = touch;
                 }
-        
+
                 if (originalEvent.touches.length === 2) {
                     const dx = originalEvent.touches[0].clientX - originalEvent.touches[1].clientX;
                     const dy = originalEvent.touches[0].clientY - originalEvent.touches[1].clientY;
@@ -813,7 +813,7 @@
                 }
                 svgContainer.data(d);
             });
-        
+
             svgContainer.on('touchmove', function(e) {
                 let d = svgContainer.data();
                 let originalEvent = e.originalEvent;
@@ -822,20 +822,20 @@
                     const dx = originalEvent.touches[0].clientX - originalEvent.touches[1].clientX;
                     const dy = originalEvent.touches[0].clientY - originalEvent.touches[1].clientY;
                     const currentDistance = Math.sqrt(dx * dx + dy * dy);
-        
+
                     const scaleChange = currentDistance / d.initialDistance;
                     const newScale = Math.max(0.17, Math.min(d.scale * scaleChange, 2.5)); // Ограничиваем масштаб между 0.17 и 2.0
-        
+
                     const currentCenter = getTouchCenter(originalEvent.touches);
                     const offsetX = (currentCenter.x - d.translateX) / d.scale;
                     const offsetY = (currentCenter.y - d.translateY) / d.scale;
-        
+
                     d.translateX = currentCenter.x - offsetX * newScale;
                     d.translateY = currentCenter.y - offsetY * newScale;
-        
+
                     d.scale = newScale;
                     d.initialDistance = currentDistance;
-        
+
                     svgContainer.data(d);
                     clampPosition();
                     updateTransform();
@@ -848,14 +848,14 @@
                     updateTransform();
                 }
             });
-        
+
             svgContainer.on('touchend touchcancel', function(e) {
                 let d = svgContainer.data();
                 let originalEvent = e.originalEvent;
                 for (let touch of originalEvent.changedTouches) {
                     delete d.activeTouches[touch.identifier];
                 }
-        
+
                 if (originalEvent.touches.length === 2) {
                     const dx = originalEvent.touches[0].clientX - originalEvent.touches[1].clientX;
                     const dy = originalEvent.touches[0].clientY - originalEvent.touches[1].clientY;
@@ -875,41 +875,41 @@
                 }
                 svgContainer.data(d);
             });
-        
+
             function getTouchCenter(touches) {
                 const rect = svgContainer[0].getBoundingClientRect();
                 const x = (touches[0].clientX + touches[1].clientX) / 2 - rect.left;
                 const y = (touches[0].clientY + touches[1].clientY) / 2 - rect.top;
                 return { x, y };
             }
-        
+
             function updateTransform() {
                 let d = svgContainer.data();
                 floorSvg.css('transform', `translate(${d.translateX}px, ${d.translateY}px) scale(${d.scale})`);
                 routeSvg.css('transform', `translate(${d.translateX}px, ${d.translateY}px) scale(${d.scale})`);
             }
-        
+
             function clampPosition() {
                 let d = svgContainer.data();
                 const containerWidth = svgContainer[0].offsetWidth;
                 const containerHeight = svgContainer[0].offsetHeight;
                 const scaledWidth = 4500 * d.scale;
                 const scaledHeight = 2500 * d.scale;
-        
+
                 const minX = Math.min(0, containerWidth - scaledWidth);
                 const maxX = 0;
                 const minY = Math.min(0, containerHeight - scaledHeight);
                 const maxY = 0;
-        
+
                 d.translateX = Math.max(minX, Math.min(maxX, d.translateX));
                 d.translateY = Math.max(minY, Math.min(maxY, d.translateY));
-        
+
                 svgContainer.data(d);
             }
         });
 
 
-        
+
 
     });
 </script>

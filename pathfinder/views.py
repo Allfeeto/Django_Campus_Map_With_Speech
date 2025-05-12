@@ -10,7 +10,11 @@ import json
 import os
 from django.conf import settings
 from django.db.models import Q
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
+@method_decorator(csrf_exempt, name='dispatch')
 class EndpointAutocompleteView(View):
     def get(self, request):
         query = request.GET.get('q', '')
@@ -33,6 +37,7 @@ class EndpointAutocompleteView(View):
             })
         return JsonResponse(results, safe=False)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class FindRouteView(View):
     def get(self, request):
         form = RouteForm()
@@ -48,6 +53,7 @@ class FindRouteView(View):
                 floor_svgs[floor.number] = None
         return render(request, 'pathfinder/find_route.html', {'form': form, 'floors': floors, 'floor_svgs': floor_svgs})
 
+    @method_decorator(csrf_exempt, name='dispatch')
     def post(self, request):
         form = RouteForm(request.POST)
         if form.is_valid():
@@ -71,6 +77,7 @@ class FindRouteView(View):
         else:
             return JsonResponse({'status': 'error', 'message': 'Форма содержит ошибки.'})
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GetFloorRouteView(View):
     def get(self, request, floor_number):
         route_json = request.GET.get('route')
@@ -98,3 +105,23 @@ class GetFloorRouteView(View):
             })
 
         return JsonResponse({'status': 'success', 'lines': lines})
+
+# эндпоин для svg для мобилки
+@method_decorator(csrf_exempt, name='dispatch')
+class GetFloorSvgView(View):
+    def get(self, request, floor_number):
+        try:
+            floor = Floor.objects.get(number=floor_number)
+            svg_path = os.path.join(settings.MEDIA_ROOT, floor.svg.name)
+            if os.path.exists(svg_path):
+                with open(svg_path, 'r', encoding='utf-8') as svg_file:
+                    svg_content = svg_file.read()
+                return HttpResponse(svg_content, content_type='image/svg+xml')
+            else:
+                return HttpResponse(status=404)
+        except Floor.DoesNotExist:
+            return HttpResponse(status=404)
+
+def get_floors(request):
+    floors = Floor.objects.values_list('number', flat=True).order_by('number')
+    return JsonResponse(list(floors), safe=False)

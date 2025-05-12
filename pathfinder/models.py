@@ -1,4 +1,4 @@
-# app/models.py
+# pathfinder/models.py
 from django.db import models
 
 class Floor(models.Model):
