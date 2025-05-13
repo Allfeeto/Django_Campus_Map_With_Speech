@@ -27,7 +27,9 @@ class EndpointAutocompleteView(View):
         else:
             # Если запрос пустой, возвращаем все или подмножество
             # Например, все первые 20 записей
-            endpoints = Endpoint.objects.all()[:20]
+            # endpoints = Endpoint.objects.all()[:20]
+            # на данный момент при пустом запросе возвращаем все
+            endpoints = Endpoint.objects.all()
 
         for ep in endpoints:
             results.append({
