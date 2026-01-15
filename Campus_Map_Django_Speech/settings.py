@@ -16,7 +16,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 #python manage.py runserver 0.0.0.0:8000
-
+# cloudflared tunnel --url http://localhost:8000
+# ssh -R 80:localhost:8080 serveo.net
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -34,6 +35,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.app',
     'https://*.ngrok.io',
     'https://*.trycloudflare.com',
+    'https://*.serveo.net',
 ]
 # Application definition
 

@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5344e3c4-608f-43eb-8681-b29791cb19c0" name="Changes" comment="для работы с котлином">
+    <list default="true" id="5344e3c4-608f-43eb-8681-b29791cb19c0" name="Changes" comment="улучшил работу автоподстановщика и его отображение">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pathfinder/templates/pathfinder/find_route.html" beforeDir="false" afterPath="$PROJECT_DIR$/pathfinder/templates/pathfinder/find_route.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pathfinder/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pathfinder/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Campus_Map_Django_Speech/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Campus_Map_Django_Speech/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pathfinder/utils/route_finder.py" beforeDir="false" afterPath="$PROJECT_DIR$/pathfinder/utils/route_finder.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,13 +63,13 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;com.codeium.enabled&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;kotlin&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/10509/PycharmProjects/Campus_Map_Django_Speech&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/10509/PycharmProjects/pythonProject8&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.uml&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -79,6 +80,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\10509\PycharmProjects\Campus_Map_Django_Speech\pathfinder\templates\pathfinder" />
       <recent name="C:\Users\10509\PycharmProjects\Campus_Map_Django_Speech" />
       <recent name="C:\Users\10509\PycharmProjects\Campus_Map_Django_Speech\pathfinder" />
       <recent name="C:\Users\10509\PycharmProjects\Campus_Map_Django_Speech\Campus_Map_Django_Speech" />
@@ -153,7 +155,24 @@
       <workItem from="1747083271987" duration="62000" />
       <workItem from="1747114642657" duration="430000" />
       <workItem from="1747119373387" duration="701000" />
-      <workItem from="1747123695429" duration="436000" />
+      <workItem from="1747123695429" duration="1191000" />
+      <workItem from="1747206816523" duration="449000" />
+      <workItem from="1747213493718" duration="784000" />
+      <workItem from="1747214341595" duration="1784000" />
+      <workItem from="1747219694809" duration="9445000" />
+      <workItem from="1747303834257" duration="424000" />
+      <workItem from="1747310778894" duration="817000" />
+      <workItem from="1747669214852" duration="175000" />
+      <workItem from="1748457160954" duration="216000" />
+      <workItem from="1752481038824" duration="523000" />
+      <workItem from="1759817356414" duration="231000" />
+      <workItem from="1763110455052" duration="17000" />
+      <workItem from="1763110500726" duration="29000" />
+      <workItem from="1763110996179" duration="874000" />
+      <workItem from="1764231063374" duration="430000" />
+      <workItem from="1764231513986" duration="27000" />
+      <workItem from="1764231561018" duration="84000" />
+      <workItem from="1768476565704" duration="1721000" />
     </task>
     <task id="LOCAL-00001" summary="+Adobe files">
       <option name="closed" value="true" />
@@ -171,7 +190,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747082357067</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="улучшил работу автоподстановщика и его отображение">
+      <option name="closed" value="true" />
+      <created>1747124251788</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1747124251788</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -180,6 +207,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="+Adobe files" />
     <MESSAGE value="для работы с котлином" />
-    <option name="LAST_COMMIT_MESSAGE" value="для работы с котлином" />
+    <MESSAGE value="улучшил работу автоподстановщика и его отображение" />
+    <option name="LAST_COMMIT_MESSAGE" value="улучшил работу автоподстановщика и его отображение" />
   </component>
 </project>
